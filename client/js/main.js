@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Initialize game board
       const boardCanvas = document.getElementById('board-canvas');
       gameBoard = new GameBoard(boardCanvas, data.boardState.size, networkManager);
+      gameBoard.setGameId(data.gameId);  // Add this line
       gameBoard.updateBoard(data.boardState);
       
       // Update scores

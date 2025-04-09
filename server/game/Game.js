@@ -79,6 +79,11 @@ class Game {
       claimedTerritories 
     };
   }
+
+  getPlayerName(playerId) {
+    const player = this.players.get(playerId);
+    return player ? player.name : null;
+  }
   
   advanceTurn() {
     // Get array of player IDs
@@ -92,6 +97,9 @@ class Game {
     // Move to next player
     const nextIndex = (currentIndex + 1) % playerIds.length;
     this.currentTurn = playerIds[nextIndex];
+
+    //Emit event about change (add this)
+    return this.currentTurn;
   }
   
   getBoardState() {
@@ -107,6 +115,50 @@ class Game {
       }))
     };
   }
+
+  // Add the updateBoard method here, after getBoardState() and before isGameOver()
+  updateBoard(boardState) {
+  // Update the board's tiles with the new state
+  if (boardState.tiles) {
+    this.board.tiles = boardState.tiles;
+  } else {
+    // In case the entire board state is passed directly
+    this.board.tiles = boardState;
+  }
+  
+  // Update other properties if needed
+  if (boardState.currentTurn) {
+    this.currentTurn = boardState.currentTurn;
+  }
+}
+
+// Add the updateTerritories method here, after updateBoard() and before isGameOver()
+updateTerritories(territories) {
+  // Update the territories on the board
+  if (territories && territories.length > 0) {
+    for (const [x, y, playerId] of territories) {
+      // Find the player's color
+      const player = this.players.get(playerId);
+      if (player) {
+        // Update territory on the board
+        this.board.territories[y][x] = player.color;
+        
+        // Update player's territory count
+        player.territory++;
+      }
+    }
+  }
+}
+
+// Add this to Board.js if it doesn't exist
+markTerritory(x, y, color) {
+  // Mark a territory as claimed by a player
+  if (x >= 0 && x < this.size && y >= 0 && y < this.size) {
+    this.territories[y][x] = color;
+    return true;
+  }
+  return false;
+}
   
   isGameOver() {
     // Game is over when board is full

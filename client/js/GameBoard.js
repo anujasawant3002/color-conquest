@@ -51,7 +51,10 @@ class GameBoard {
     }
     
     handleClick(event) {
-      if (!this.interactive || !this.gameId) return;
+      if (!this.interactive || !this.gameId){
+        console.log('Cannot place tile - board not interactive or game ID missing');
+        return;
+      }
       
       // Get click coordinates relative to canvas
       const rect = this.canvas.getBoundingClientRect();
@@ -192,4 +195,4 @@ class GameBoard {
       return `rgb(${r}, ${g}, ${b})`;
     }
   }
-  console.log(`Clicked on (${x}, ${y}), Interactive: ${this.interactive}, Game ID: ${this.gameId}`);
+  
